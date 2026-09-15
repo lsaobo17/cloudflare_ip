@@ -1,13 +1,9 @@
 services:
   cloudflare_ip:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: cloudflare_ip:latest
+    image: ghcr.io/lsaobo17/cloudflare_ip:latest
     container_name: cloudflare_ip
     restart: unless-stopped
-    # Linux 环境推荐开启 host 网络模式，避免 Docker NAT 桥接网络损耗及多端口测速延迟偏差
-    # 如果在 Windows / macOS Docker Desktop 或受限环境运行，可注释掉此行
+    # Linux / NAS 环境推荐开启 host 网络直连，避免 NAT 虚拟网卡测速偏差
     network_mode: "host"
     environment:
       - TZ=Asia/Shanghai
@@ -18,22 +14,21 @@ services:
       # 是否仅单次执行（设为 true 测速完成后自动退出；设为 false 常驻定时运行）
       - RUN_ONCE=false
 
-      # --- 运行模式与功能开关（可直接在此配置，优先级高于 .env） ---
-      # - DEFAULT_MODE=cloud
-      # - USE_R2=true
-      # - USE_GH=false
-      # - USE_TG=false
-      # - USE_MAIL=false
+      # --- 运行模式与功能开关（直接在此配置，无需创建 .env 文件） ---
+      - DEFAULT_MODE=cloud
+      - USE_R2=true
+      - USE_GH=false
+      - USE_TG=false
+      - USE_MAIL=false
 
-      # --- Cloudflare R2 参数（支持直接在此填写，无需建 .env 文件） ---
-      # - CF_ACCOUNT_ID=你的账户ID
-      # - CF_ACCESS_KEY=你的访问密钥ID
-      # - CF_SECRET_KEY=你的机密访问密钥
-      # - CF_BUCKET_NAME=你的存储桶名称
-    volumes:
-      # 挂载配置文件
-      - ./.env:/app/.env
-      # 挂载测速结果至宿主机，方便其他程序直接调用
-      - ./best_ips.txt:/app/best_ips.txt
-      - ./full_ips.txt:/app/full_ips.txt
-      - ./README.MD:/app/README.MD
+      # --- Cloudflare R2 参数（直接替换为你自己的密钥） ---
+      - CF_ACCOUNT_ID=你的账户ID
+      - CF_ACCESS_KEY=你的访问密钥ID
+      - CF_SECRET_KEY=你的机密访问密钥
+      - CF_BUCKET_NAME=你的存储桶名称
+
+    # 💡 提示：使用 R2 上传时，测速文件会自动同步至云端，以下 volumes 可直接不挂载（避免 NAS 将单文件误创建为文件夹报错）。
+    # 若确实需要在宿主机本地查看测速文件，请先在宿主机终端执行：touch best_ips.txt full_ips.txt 再取消以下注释：
+    # volumes:
+    #   - ./best_ips.txt:/app/best_ips.txt
+    #   - ./full_ips.txt:/app/full_ips.txt
