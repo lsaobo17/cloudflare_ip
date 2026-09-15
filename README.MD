@@ -81,7 +81,7 @@ docker compose up -d --build
 # 查看实时测速日志与进度
 docker compose logs -f
 ```
-完整参数说明、单次运行指令与网络配置请参阅：[Docker 部署指南](file:///c:/AI_Saas/yx/DOCKER.md)。
+完整参数说明与获取教程请参阅：[参数配置详细教程](file:///c:/AI_Saas/yx/CONFIG_GUIDE.md) 以及 [Docker 部署指南](file:///c:/AI_Saas/yx/DOCKER.md)。
 
 ---
 
