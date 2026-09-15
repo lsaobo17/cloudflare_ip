@@ -66,6 +66,25 @@ https://raw.githubusercontent.com/svip-s/cloudflare_ip/refs/heads/main/domain.tx
 
 ---
 ## 脚本使用方法
+
+### Docker 容器化部署（推荐）
+
+本项目已提供完整的 Docker 与 Docker Compose 方案，支持定时测速常驻、单次测速与配置面板交互，无需在宿主机配置复杂的 Python/Git 环境：
+
+```bash
+# 复制配置文件模板并按需修改
+cp .env.example .env
+
+# 一键构建并在后台常驻定时运行
+docker compose up -d --build
+
+# 查看实时测速日志与进度
+docker compose logs -f
+```
+完整参数说明、单次运行指令与网络配置请参阅：[Docker 部署指南](file:///c:/AI_Saas/yx/DOCKER.md)。
+
+---
+
 ### Linux/Termux(Android)/Git(Windows)
 
 > ⚠️ 注意： 运行脚本进行测速时，请务必关闭设备上的 VPN 或代理工具，或者将环境隔离出代理，例如安卓端可以在代理软件开启分应用代理，排除 Termux，否则测出的是代理服务器的速度，而非你本地直连 Cloudflare 的真实速度。

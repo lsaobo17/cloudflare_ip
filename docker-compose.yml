@@ -1,0 +1,26 @@
+services:
+  cloudflare_ip:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: cloudflare_ip:latest
+    container_name: cloudflare_ip
+    restart: unless-stopped
+    # Linux 环境推荐开启 host 网络模式，避免 Docker NAT 桥接网络损耗及多端口测速延迟偏差
+    # 如果在 Windows / macOS Docker Desktop 或受限环境运行，可注释掉此行
+    network_mode: "host"
+    environment:
+      - TZ=Asia/Shanghai
+      # 定时任务 CRON 表达式（默认每天 14:00 ~ 02:00 与 08:00 整点运行）
+      - CRON_SCHEDULE=0 8,14-23,0-2 * * *
+      # 容器启动时是否立即触发一次测速
+      - RUN_ON_START=true
+      # 是否仅单次执行（设为 true 测速完成后自动退出；设为 false 常驻定时运行）
+      - RUN_ONCE=false
+    volumes:
+      # 挂载配置文件
+      - ./.env:/app/.env
+      # 挂载测速结果至宿主机，方便其他程序直接调用
+      - ./best_ips.txt:/app/best_ips.txt
+      - ./full_ips.txt:/app/full_ips.txt
+      - ./README.MD:/app/README.MD
